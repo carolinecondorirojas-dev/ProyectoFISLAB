@@ -1,7 +1,5 @@
 ## Teoría de Poetry (gestor de dependencias y empaquetado para Python)
 
-Este documento resume la "teoría" y uso práctico de Poetry: qué es, por qué usarlo, cuándo usarlo y cómo usarlo en Windows PowerShell.
-
 ### ¿Qué es Poetry?
 
 Poetry es una herramienta moderna para gestionar dependencias, entornos y empaquetado de proyectos en Python. Centraliza la configuración en `pyproject.toml`, resuelve dependencias y genera un archivo de bloqueo (`poetry.lock`) para reproducibilidad. También facilita la construcción y publicación de paquetes.
@@ -161,12 +159,3 @@ Desventajas / limitaciones:
 - Guía rápida: https://python-poetry.org/docs/basic-usage/
 - PEP relacionados: PEP 518 (pyproject), PEP 621 (metadata)
 
----
-
-Si quieres, puedo:
-
-- Añadir ejemplos concretos adaptados a un proyecto del repositorio.
-- Generar un pequeño script de CI (GitHub Actions) que use Poetry.
-- Convertir un proyecto existente con `requirements.txt` a Poetry (paso a paso).
-
-Archivo actualizado: `teoria_poetry.md` contiene ahora explicación, comandos PowerShell y recursos.
