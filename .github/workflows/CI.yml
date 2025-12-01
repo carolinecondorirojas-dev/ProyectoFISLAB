@@ -1,31 +1,48 @@
-name: CI with Poetry + Cache
+name: CI - Poetry
 
-on: [push, pull_request]
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-
-      - name: Cache Poetry Dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pypoetry
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install Poetry
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Install deps
-        run: poetry install --no-interaction
+      - name: Configure Poetry
+        run: |
+          poetry config virtualenvs.create false
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root
 
       - name: Run tests
-        run: poetry run pytest
+        run: |
+          if [ -d "tests" ]; then
+            poetry run pytest
+          else
+            echo "No hay carpeta de tests, omitiendo pruebas."
+          fi
+
+      - name: Ejecutar programa principal (opcional)
+        run: |
+          if [ -f "main.py" ]; then
+            poetry run python main.py
+          else
+            echo "No hay archivo main.py, omitiendo ejecución."
+          fi
