@@ -1,4 +1,4 @@
-name: CI - Poetry (Windows - Simple)
+name: CI - Poetry (Windows - Python 3.13 + Cache)
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Python
+      - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
@@ -24,13 +24,36 @@ jobs:
           (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
           echo "$env:APPDATA\Python\Scripts" | Out-File -FilePath $env:GITHUB_PATH -Append
 
-      - name: Install dependencies via Poetry
-        run: poetry install --no-interaction
+      - name: Configure Poetry
+        run: |
+          poetry config virtualenvs.create false
+
+      - name: Cache de dependencias de Poetry
+        uses: actions/cache@v4
+        with:
+          path: |
+            .venv
+            ${{ env.USERPROFILE }}\AppData\Local\pypoetry\Cache
+          key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            poetry-${{ runner.os }}-
+
+      - name: Instalar dependencias
+        run: |
+          poetry install --no-interaction --no-root
 
       - name: Ejecutar tests
-        run: poetry run pytest
-        continue-on-error: true   
+        run: |
+          if (Test-Path "tests") {
+            poetry run pytest
+          } else {
+            echo "No hay carpeta de tests."
+          }
 
-      - name: Ejecutar aplicación principal
-        run: poetry run python main.py
-
+      - name: Ejecutar programa principal
+        run: |
+          if (Test-Path "main.py") {
+            poetry run python main.py
+          } else {
+            echo "No existe main.py."
+          }
