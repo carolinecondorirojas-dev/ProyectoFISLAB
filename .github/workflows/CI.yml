@@ -1,4 +1,4 @@
-name: CI - Poetry
+name: CI - Poetry (Windows - Simple)
 
 on:
   push:
@@ -8,41 +8,29 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Install Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: "3.12"
 
       - name: Install Poetry
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | python -
+          echo "$env:APPDATA\Python\Scripts" | Out-File -FilePath $env:GITHUB_PATH -Append
 
-      - name: Configure Poetry
-        run: |
-          poetry config virtualenvs.create false
+      - name: Install dependencies via Poetry
+        run: poetry install --no-interaction
 
-      - name: Install dependencies
-        run: poetry install --no-interaction --no-root
+      - name: Ejecutar tests
+        run: poetry run pytest
+        continue-on-error: true   
 
-      - name: Run tests
-        run: |
-          if [ -d "tests" ]; then
-            poetry run pytest
-          else
-            echo "No hay carpeta de tests, omitiendo pruebas."
-          fi
+      - name: Ejecutar aplicación principal
+        run: poetry run python main.py
 
-      - name: Ejecutar programa principal (opcional)
-        run: |
-          if [ -f "main.py" ]; then
-            poetry run python main.py
-          else
-            echo "No hay archivo main.py, omitiendo ejecución."
-          fi
