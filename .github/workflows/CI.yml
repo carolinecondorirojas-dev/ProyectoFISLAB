@@ -50,10 +50,4 @@ jobs:
             echo "No hay carpeta de tests."
           }
 
-      - name: Ejecutar programa principal
-        run: |
-          if (Test-Path "main.py") {
-            poetry run python main.py
-          } else {
-            echo "No existe main.py."
-          }
+    

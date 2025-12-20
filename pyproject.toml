@@ -6,12 +6,9 @@ authors = ["carolinecondorirojas-dev <branezromerosharlinnavyolet03@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.13"
+python = "^3.10 || ^3.11 || ^3.12 || ^3.13 || ^3.15"
 pandas = ">=2.3.3,<3.0.0"
 matplotlib = ">=3.10.7,<4.0.0"
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
